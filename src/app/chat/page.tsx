@@ -14,41 +14,33 @@ export default function ChatPage() {
   ]);
   const [input, setInput] = useState('');
 
-useEffect(() => {
-
-  const fetchData = async () => {
-    try {
-      const res = await fetch('/api/get-reply');
-      if (!res.ok) return;
-      
-      const data = await res.json();
-      
-      if (data && data.text) {
-        setMessages(prev => {
-          const lastMsg = prev[prev.length - 1];
-          if (lastMsg?.text === data.text && lastMsg?.sender === 'bot') {
-            return prev;
-          }
-          
-          return [...prev, { 
-            id: Date.now(), 
-            text: data.text, 
-            sender: 'bot' 
-          }];
-        });
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch('/api/get-reply');
+        const data = await res.json();
+        
+        if (data && data.text) {
+          setMessages(prev => {
+            const lastMsg = prev[prev.length - 1];
+            if (lastMsg?.text === data.text && lastMsg?.sender === 'bot') {
+              return prev;
+            }
+            
+            return [...prev, { 
+              id: Date.now(), 
+              text: data.text, 
+              sender: 'bot' 
+            }];
+          });
+        }
+      } catch (err) {
+        console.error(err);
       }
-    } catch (err) {
-      console.error("Fetch error:", err);
-    }
-  };
+    }, 3000);
 
-  const interval = setInterval(fetchData, 3000);
-
-  return () => {
-    console.log("Interval cleared");
-    clearInterval(interval);
-  };
-}, []);
+    return () => clearInterval(interval);
+  }, []);
 
   async function handleSubmit(formData: FormData) {
     const text = formData.get('message') as string;
