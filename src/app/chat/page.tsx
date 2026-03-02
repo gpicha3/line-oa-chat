@@ -10,6 +10,7 @@ import { sendMessage } from './actions';
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isBroadcast, setIsBroadcast] = useState(false);
   const [input, setInput] = useState('');
 
   useEffect(() => {
@@ -49,6 +50,8 @@ export default function ChatPage() {
     const text = formData.get('message') as string;
     if (!text.trim()) return;
 
+    formData.append('isBroadcast', isBroadcast.toString());
+
     setMessages(prev => [...prev, { id: Date.now(), text, sender: 'user' }]);
     setInput('');
 
@@ -57,7 +60,11 @@ export default function ChatPage() {
 
   return (
     <div className="flex flex-col h-screen bg-gray-100 font-sans">
-      <ChatHeader title="Line OA" />
+      <ChatHeader 
+        title="Line OA" 
+        isEnabled={isBroadcast} 
+        setIsEnabled={setIsBroadcast} 
+      />
       
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         <ChatMessageList messages={messages} />
