@@ -1,15 +1,19 @@
 'use server'
 
 import { Client } from '@line/bot-sdk';
+import Redis from 'ioredis';
 
 const client = new Client({
   channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN || '',
   channelSecret: process.env.LINE_CHANNEL_SECRET || '',
 });
 
+const redis = new Redis(process.env.REDIS_URL || "");
+
 export async function sendMessage(formData: FormData) {
   const message = formData.get('message') as string;
-  const userId = process.env.LINE_USER_ID || '';
+  const lastMsgData = await redis.get('last_message');
+  const { userId } = JSON.parse(lastMsgData || "");
 
   if (!message) return { status: 'error', };
 
@@ -18,7 +22,12 @@ export async function sendMessage(formData: FormData) {
       type: 'text',
       text: message,
     });
-    return { status: 'success', msg: 'ได้รับข้อความแล้ว' };
+    //For everyone test
+    // await client.broadcast({
+    //   type: 'text',
+    //   text: message
+    // });
+    return { status: 'success', msg: 'Successfully' };
   } catch (error) {
     console.error(error);
     return { status: 'error', msg: "Error can't send message" };
