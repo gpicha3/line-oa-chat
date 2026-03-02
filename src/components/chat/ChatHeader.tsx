@@ -4,14 +4,29 @@ import { useState } from 'react';
 
 interface ChatHeaderProps {
   title: string;
+  isEnabled: boolean;
+  setIsEnabled: (val: boolean) => void;
 }
 
-export const ChatHeader = ({ title }: ChatHeaderProps) => {
+export const ChatHeader = ({ title, isEnabled, setIsEnabled }: ChatHeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <header className="bg-green-400 p-4 shadow-sm flex justify-between items-center relative z-20">
-      <div className="w-10"></div>
+      
+      <div className="flex items-center">
+        <label className="relative inline-flex items-center cursor-pointer">
+          <input 
+            type="checkbox" 
+            className="sr-only peer" 
+            checked={isEnabled}
+            onChange={() => setIsEnabled(!isEnabled)}
+          />
+          <img src={isEnabled ? "https://cdn-icons-png.flaticon.com/128/9019/9019234.png" : "https://cdn-icons-png.flaticon.com/128/1041/1041916.png"}
+          className='w-9 h-9'/>
+        </label>
+      </div>
+
       <h1 className="text-xl font-bold text-black">{title}</h1>
 
       <button 
@@ -44,7 +59,6 @@ export const ChatHeader = ({ title }: ChatHeaderProps) => {
                   <span className="font-medium text-gray-700">Link to LineOA</span>
                 </a>
               </li>
-
               <li>
                 <a 
                   href="https://github.com/gpicha3/line-oa-chat"

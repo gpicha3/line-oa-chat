@@ -12,11 +12,6 @@ export async function POST(req: Request) {
       if (event.type === 'message' && event.message.type === 'text') {
         const replyText = event.message.text;
         const userId = event.source.userId;
-        
-        // await redis.set('last_message', JSON.stringify({
-        //   text: replyText,
-        //   timestamp: Date.now()
-        // }));
 
         await redis.set('last_message', JSON.stringify({ text: replyText }));
 
