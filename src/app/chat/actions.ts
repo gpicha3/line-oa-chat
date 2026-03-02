@@ -12,24 +12,30 @@ const redis = new Redis(process.env.REDIS_URL || "");
 
 export async function sendMessage(formData: FormData) {
   const message = formData.get('message') as string;
-  const lastMsgData = await redis.get('last_message');
-  const { userId } = JSON.parse(lastMsgData || "");
-
-  if (!message) return { status: 'error', };
+  if (!message) return { status: 'error', msg: 'Please enter a message' };
 
   try {
+    const lastMsgData = await redis.get('last_message');
+    
+    if (!lastMsgData) {
+      return { status: 'error', msg: 'No recipient found. Please send a message from LINE first.' };
+    }
+
+    const parsedData = JSON.parse(lastMsgData);
+    const userId = parsedData.userId;
+
+    if (!userId) {
+      return { status: 'error', msg: 'User ID not found' };
+    }
+
     await client.pushMessage(userId, {
       type: 'text',
       text: message,
     });
-    //For everyone test
-    // await client.broadcast({
-    //   type: 'text',
-    //   text: message
-    // });
-    return { status: 'success', msg: 'Successfully' };
+
+    return { status: 'success', msg: 'Successfully sent' };
   } catch (error) {
-    console.error(error);
-    return { status: 'error', msg: "Error can't send message" };
+    console.error("Send Message Error:", error);
+    return { status: 'error', msg: "Internal server error" };
   }
 }
