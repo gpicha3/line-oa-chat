@@ -9,9 +9,7 @@ import { Message } from '@/types/message';
 import { sendMessage } from './actions';
 
 export default function ChatPage() {
-  const [messages, setMessages] = useState<Message[]>([
-    { id: 1, text: "Welcome to Chat With LineOA", sender: 'bot' }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
 
   useEffect(() => {
@@ -54,10 +52,7 @@ export default function ChatPage() {
     setMessages(prev => [...prev, { id: Date.now(), text, sender: 'user' }]);
     setInput('');
 
-    const result = await sendMessage(formData);
-    
-    const botMsg: Message = { id: Date.now() + 1, text: result.msg || "Error something wrong" , sender: 'bot' };
-      setMessages(prev => [...prev, botMsg]);
+    await sendMessage(formData);
   }
 
   return (

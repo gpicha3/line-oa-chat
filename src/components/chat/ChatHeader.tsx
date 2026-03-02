@@ -61,7 +61,6 @@ export const ChatHeader = ({ title }: ChatHeaderProps) => {
                   <span className="font-medium text-gray-700">Link to Github</span>
                 </a>
               </li>
-              <li>V1.0.1</li>
             </ul>
           </div>
         </>
