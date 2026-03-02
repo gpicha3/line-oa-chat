@@ -17,7 +17,12 @@ export default function ChatPage() {
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
-        const res = await fetch('/api/get-reply');
+        const res = await fetch('/api/get-reply', {
+          cache: 'no-store',
+          headers: {
+            'Cache-Control': 'no-cache'
+          }
+        });
         const data = await res.json();
         
         if (data && data.text) {
