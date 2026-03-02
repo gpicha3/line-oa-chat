@@ -18,7 +18,7 @@ export async function sendMessage(formData: FormData) {
       type: 'text',
       text: message,
     });
-    return { status: 'success', msg: 'Successfully' };
+    return { status: 'success', msg: 'ได้รับข้อความแล้ว' };
   } catch (error) {
     console.error(error);
     return { status: 'error', msg: "Error can't send message" };
