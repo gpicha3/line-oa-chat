@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { ChatHeader } from '@/components/chat/ChatHeader';
 import { ChatMessageList } from '@/components/chat/ChatMessageList';
@@ -14,6 +14,44 @@ export default function ChatPage() {
   ]);
   const [input, setInput] = useState('');
 
+useEffect(() => {
+  console.log("Interval started"); // ใส่เพื่อเช็กใน Console ว่า useEffect ทำงานไหม
+
+  const fetchData = async () => {
+    try {
+      const res = await fetch('/api/get-reply');
+      if (!res.ok) return;
+      
+      const data = await res.json();
+      
+      // ตรวจสอบว่ามีข้อความจริงและไม่ใช่ค่าว่าง
+      if (data && data.text) {
+        setMessages(prev => {
+          // ป้องกันการเพิ่มข้อความซ้ำ (Check last message)
+          const lastMsg = prev[prev.length - 1];
+          if (lastMsg?.text === data.text && lastMsg?.sender === 'bot') {
+            return prev;
+          }
+          
+          return [...prev, { 
+            id: Date.now(), 
+            text: data.text, 
+            sender: 'bot' 
+          }];
+        });
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
+  };
+
+  const interval = setInterval(fetchData, 3000);
+
+  return () => {
+    console.log("Interval cleared");
+    clearInterval(interval);
+  };
+}, []);
 
   async function handleSubmit(formData: FormData) {
     const text = formData.get('message') as string;
