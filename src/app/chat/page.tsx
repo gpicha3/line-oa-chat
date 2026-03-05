@@ -12,8 +12,9 @@ import { ChatSidebar } from '@/components/chat/ChatSidebar';
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<any[]>([]);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const activeUserData = users.find(u => u.id === selectedUserId);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -65,8 +66,13 @@ export default function ChatPage() {
       <div className="flex-1 flex flex-col">
         {selectedUserId ? (
           <>
-            <ChatHeader title={`Chat: ${selectedUserId.substring(0,8)}`} />
-            <div className="flex-1 overflow-y-auto p-4"><ChatMessageList messages={messages} /></div>
+            <ChatHeader title={activeUserData?.name || "Customer"} />
+            <div className="flex-1 overflow-y-auto p-4">
+               <ChatMessageList 
+                 messages={messages} 
+                 customerProfile={activeUserData?.picture} 
+               />
+            </div>
             <ChatInput 
               input={input}
               setInput={setInput}
