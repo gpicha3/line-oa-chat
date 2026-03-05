@@ -4,30 +4,15 @@ import { useState } from 'react';
 
 interface ChatHeaderProps {
   title: string;
-  isEnabled: boolean;
-  setIsEnabled: (val: boolean) => void;
 }
 
-export const ChatHeader = ({ title, isEnabled, setIsEnabled }: ChatHeaderProps) => {
+export const ChatHeader = ({ title }: ChatHeaderProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <header className="bg-green-400 p-4 shadow-sm flex justify-between items-center relative z-20">
-      
-      <div className="flex items-center">
-        <label className="relative inline-flex items-center cursor-pointer">
-          <input 
-            type="checkbox" 
-            className="sr-only peer" 
-            checked={isEnabled}
-            onChange={() => setIsEnabled(!isEnabled)}
-          />
-          <img src={isEnabled ? "https://cdn-icons-png.flaticon.com/128/9019/9019234.png" : "https://cdn-icons-png.flaticon.com/128/1041/1041916.png"}
-          className='w-9 h-9'/>
-        </label>
-      </div>
 
-      <h1 className="text-xl font-bold text-black">{title}</h1>
+      <h1 className="text-xl font-bold text-black">Chatting with: {title.substring(0, 15)}</h1>
 
       <button 
         onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -82,3 +67,4 @@ export const ChatHeader = ({ title, isEnabled, setIsEnabled }: ChatHeaderProps) 
     </header>
   );
 };
+
