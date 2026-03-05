@@ -12,7 +12,7 @@ export const ChatHeader = ({ title }: ChatHeaderProps) => {
   return (
     <header className="bg-green-400 p-4 shadow-sm flex justify-between items-center relative z-20">
 
-      <h1 className="text-xl font-bold text-black">Chatting with: {title.substring(0, 15)}</h1>
+      <h1 className="text-xl font-bold text-black">Chatting with: {title}</h1>
 
       <button 
         onClick={() => setIsMenuOpen(!isMenuOpen)}
