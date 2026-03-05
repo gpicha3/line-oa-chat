@@ -1,5 +1,7 @@
 interface ChatUser {
-  id: string;
+  id: string, 
+  name: string,
+  picture: string,
   lastMessage?: string;
 }
 
@@ -16,10 +18,21 @@ export const ChatSidebar = ({ users, activeUser, onSelectUser }: ChatSidebarProp
       <div 
         key={user.id}
         onClick={() => onSelectUser(user.id)}
-        className={`p-4 cursor-pointer hover:bg-gray-50 border-b ${activeUser === user.id ? 'bg-green-50' : ''}`}
+        className={`p-4 cursor-pointer hover:bg-gray-50 border-b ${
+          activeUser === user.id ? 'bg-green-50' : ''
+        }`}
       >
-        <div className="font-medium text-sm text-gray-900">{user.id.substring(0, 10)}...</div>
-        <div className="text-xs text-gray-500 truncate">{user.lastMessage}</div>
+        <div className="flex items-center gap-3">
+          <img src={user.picture || "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png"} 
+              className="w-10 h-10 rounded-full border" />
+          
+          <div className="flex-1 overflow-hidden">
+            <div className="font-bold text-sm text-gray-900 truncate">
+              {user.name}
+            </div>
+            <div className="text-xs text-gray-500 truncate">{user.lastMessage}</div>
+          </div>
+        </div>
       </div>
     ))}
   </div>

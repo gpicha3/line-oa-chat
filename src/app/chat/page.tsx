@@ -11,9 +11,8 @@ import { ChatSidebar } from '@/components/chat/ChatSidebar';
 
 export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [isBroadcast, setIsBroadcast] = useState(false);
   const [input, setInput] = useState('');
-  const [users, setUsers] = useState([]); // รายชื่อคนทักมา
+  const [users, setUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   useEffect(() => {

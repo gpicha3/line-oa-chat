@@ -4,16 +4,21 @@ import { NextResponse } from 'next/server';
 const redis = new Redis(process.env.REDIS_URL || "");
 
 export async function GET() {
-  try {
-    const userIds = await redis.smembers('chat_users');
+  const userIds = await redis.smembers('chat_users');
+  
+  const usersWithProfiles = await Promise.all(userIds.map(async (id) => {
+    const profileData = await redis.get(`user_profile:${id}`);
+    const lastMsg = await redis.get(`last_msg:${id}`);
     
-    const usersWithLastMsg = await Promise.all(userIds.map(async (id) => {
-      const lastMsg = await redis.get(`last_msg:${id}`);
-      return { id, lastMessage: lastMsg || "" };
-    }));
+    const profile = profileData ? JSON.parse(profileData) : { displayName: id.substring(0, 10) };
+    
+    return { 
+      id, 
+      name: profile.displayName,
+      picture: profile.pictureUrl,
+      lastMessage: lastMsg || "" 
+    };
+  }));
 
-    return NextResponse.json(usersWithLastMsg);
-  } catch (error) {
-    return NextResponse.json([], { status: 500 });
-  }
+  return NextResponse.json(usersWithProfiles);
 }
